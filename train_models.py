@@ -1,8 +1,3 @@
-"""Train five classifiers on the UCI Optical Recognition of Handwritten Digits dataset
-(as shipped with scikit-learn), evaluate them, and save everything the Streamlit app needs.
-
-Run:  python train_models.py
-"""
 import json
 import os
 
@@ -54,3 +49,32 @@ models = {
         ("clf", SVC(kernel="rbf", C=10, gamma="scale", probability=True,
                     random_state=RANDOM_STATE))]),
 }
+
+def compute_metrics(model, X_eval, y_eval):
+    """Same function is used by the Streamlit app (copied there) - multi-class, macro averaged."""
+    y_pred = model.predict(X_eval)
+    y_proba = model.predict_proba(X_eval)
+    return {
+        "Accuracy": accuracy_score(y_eval, y_pred),
+        "AUC": roc_auc_score(y_eval, y_proba, multi_class="ovr", average="macro"),
+        "Precision": precision_score(y_eval, y_pred, average="macro", zero_division=0),
+        "Recall": recall_score(y_eval, y_pred, average="macro", zero_division=0),
+        "F1": f1_score(y_eval, y_pred, average="macro", zero_division=0),
+        "MCC": matthews_corrcoef(y_eval, y_pred),
+    }
+
+
+results = {}
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    results[name] = compute_metrics(model, X_test, y_test)
+    fname = name.lower().replace(" ", "_") + ".joblib"
+    joblib.dump(model, os.path.join(MODEL_DIR, fname))
+
+joblib.dump(feature_cols, os.path.join(MODEL_DIR, "feature_columns.joblib"))
+
+table = pd.DataFrame(results).T.round(4)
+table.index.name = "ML Model Name"
+table.to_csv("model_comparison.csv")
+print(table.to_markdown())
+print(f"\nTrain rows: {len(X_train)}  Test rows: {len(X_test)}  Features: {X.shape[1]}  Total: {len(X)}")
