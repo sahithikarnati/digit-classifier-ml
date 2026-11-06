@@ -51,3 +51,35 @@ def evaluate(model, X, y):
     except ValueError:  # e.g. uploaded file is missing some classes
         metrics["AUC (OvR macro)"] = float("nan")
     return metrics, y_pred
+
+# ------------------------------------------------------------------ UI
+st.title("🔢 Handwritten Digit Classifier Lab")
+st.caption("Five pre-trained models on the UCI Optical Recognition of Handwritten Digits "
+           "dataset (64 pixel features, 10 classes). Upload test data and compare them.")
+
+with st.sidebar:
+    st.header("1 · Upload test data")
+    uploaded = st.file_uploader("CSV with 64 pixel columns + `target`", type="csv")
+    st.markdown("Use the provided `test_data.csv` from the repository.")
+    st.header("2 · Choose model")
+    model_name = st.selectbox("Classifier", list(MODEL_FILES))
+    compare_all = st.checkbox("Also compare all five models", value=True)
+
+if uploaded is None:
+    st.info("👈 Upload `test_data.csv` in the sidebar to begin.")
+    st.stop()
+
+df = pd.read_csv(uploaded)
+feature_cols = load_feature_columns()
+missing = [c for c in feature_cols + [TARGET_COL] if c not in df.columns]
+if missing:
+    st.error(f"Uploaded file is missing required columns: {missing[:8]}"
+             f"{' ...' if len(missing) > 8 else ''}")
+    st.stop()
+
+X, y = df[feature_cols], df[TARGET_COL]
+st.success(f"Loaded {len(df)} rows · {len(feature_cols)} features · "
+           f"{y.nunique()} classes")
+with st.expander("Preview uploaded data"):
+    st.dataframe(df.head(20), width="stretch")
+
