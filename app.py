@@ -107,3 +107,10 @@ with right:
     report = classification_report(y, y_pred, output_dict=True, zero_division=0)
     st.dataframe(pd.DataFrame(report).T.round(3), width="stretch")
 
+# ---- comparison of all models
+if compare_all:
+    st.subheader("All models on the uploaded data")
+    rows = {n: evaluate(load_model(n), X, y)[0] for n in MODEL_FILES}
+    comp = pd.DataFrame(rows).T.round(4)
+    st.dataframe(comp.style.highlight_max(axis=0, color="#cdeccd"), width="stretch")
+    st.bar_chart(comp[["Accuracy", "F1 (macro)", "MCC"]])
