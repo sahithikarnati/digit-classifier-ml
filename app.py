@@ -83,3 +83,12 @@ st.success(f"Loaded {len(df)} rows · {len(feature_cols)} features · "
 with st.expander("Preview uploaded data"):
     st.dataframe(df.head(20), width="stretch")
 
+# ---- selected model
+model = load_model(model_name)
+metrics, y_pred = evaluate(model, X, y)
+
+st.subheader(f"Evaluation metrics — {model_name}")
+cols = st.columns(len(metrics))
+for col, (k, v) in zip(cols, metrics.items()):
+    col.metric(k, "n/a" if np.isnan(v) else f"{v:.4f}")
+
