@@ -1,7 +1,7 @@
 # Handwritten Digit Classification — ML Assignment 2
 
 **Course:** Machine Learning · M.Tech (AIML), BITS Pilani WILP
-**Live app:** 
+**Live app:** https://digit-classifier-ml.streamlit.app/
 
 ## a. Problem statement
 
@@ -34,7 +34,7 @@ Bayes use raw pixel values.
 AUC is **one-vs-rest macro-averaged** using predicted probabilities; MCC is the multi-class generalisation.
 
 ## c. GitHub repository link
-
+https://github.com/sahithikarnati/digit-classifier-ml
 ```
 project-folder/
 │-- app.py                 # Streamlit app (loads saved models, never retrains)
