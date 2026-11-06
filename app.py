@@ -92,3 +92,18 @@ cols = st.columns(len(metrics))
 for col, (k, v) in zip(cols, metrics.items()):
     col.metric(k, "n/a" if np.isnan(v) else f"{v:.4f}")
 
+left, right = st.columns(2)
+with left:
+    st.subheader("Confusion matrix")
+    cm = confusion_matrix(y, y_pred, labels=model.classes_)
+    fig, ax = plt.subplots(figsize=(5.5, 4.5))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False,
+                xticklabels=model.classes_, yticklabels=model.classes_, ax=ax)
+    ax.set_xlabel("Predicted")
+    ax.set_ylabel("Actual")
+    st.pyplot(fig)
+with right:
+    st.subheader("Classification report")
+    report = classification_report(y, y_pred, output_dict=True, zero_division=0)
+    st.dataframe(pd.DataFrame(report).T.round(3), width="stretch")
+
