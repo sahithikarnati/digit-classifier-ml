@@ -1,7 +1,7 @@
 # Handwritten Digit Classification — ML Assignment 2
 
 **Course:** Machine Learning · M.Tech (AIML), BITS Pilani WILP
-**Live app:** `<PASTE YOUR STREAMLIT COMMUNITY CLOUD LINK HERE>`
+**Live app:** 
 
 ## a. Problem statement
 
@@ -32,3 +32,19 @@ Bayes use raw pixel values.
 
 **Metric averaging:** as the problem is multi-class, Precision, Recall and F1 are **macro-averaged**;
 AUC is **one-vs-rest macro-averaged** using predicted probabilities; MCC is the multi-class generalisation.
+
+## c. GitHub repository link
+
+```
+project-folder/
+│-- app.py                 # Streamlit app (loads saved models, never retrains)
+│-- train_models.py        # trains + evaluates the 5 models, writes model/ and test_data.csv
+│-- requirements.txt
+│-- README.md
+│-- test_data.csv          # 450 held-out rows (64 features + target)
+│-- model_comparison.csv   # metrics table produced by train_models.py
+│-- model/                 # logistic_regression, decision_tree, knn, naive_bayes,
+│                          # support_vector_machine (.joblib) + feature_columns.joblib
+```
+
+Reproduce: `pip install -r requirements.txt && python train_models.py && streamlit run app.py`
